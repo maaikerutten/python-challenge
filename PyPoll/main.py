@@ -21,24 +21,29 @@ list_candidates = election_data_df.Candidate.unique()
 
 print(list_candidates)
 
-# % of votes per candidate & total number of votes per candidate
+# % of votes per candidate & total number of votes per candidate, descending
 
 votes_candidate = election_data_df.groupby('Candidate').size().to_frame('counts')
 votes_candidate['perc_candidate']= votes_candidate['counts']/votes_candidate['counts'].sum()
+votes_candidate.sort_values('perc_candidate', inplace=True, ascending=False)
 
 print(votes_candidate)
+
+# # add % and zero decimals
+output = votes_candidate.to_string(formatters={"perc_candidate":'{:,.0%}'.format})
+print (output)
 
 # election winner via popular vote
 winner = election_data_df['Candidate'].value_counts().idxmax()
 
 print(winner)
 
-# results, every record on new line, rounded 2 decimals for average and 0 decimals for max in min
+# results, every record on new line
 results = ("Election Results \n"
 + "-------------------------------\n"
 + "Total Votes: " + str(total_votes) + "\n" 
 + "-------------------------------\n"     
-+ str(votes_candidate)  + "\n"            
++ output + "\n"            
 + "-------------------------------\n"
 + "Winner: " + winner + "\n"
 + "--------------------------------\n") 
